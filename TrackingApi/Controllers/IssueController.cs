@@ -15,15 +15,32 @@ namespace TrackingApi.Controllers
 
 
         [HttpGet]
-        public async Task<IEnumerable<Issue>> GetIssues()
+        public async Task<IEnumerable<Issue>> GetIssues() => await _context.Issues.ToListAsync();
+
+        [HttpGet("{id}")]
+        [ProducesResponseType(typeof(Issue), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetById(int id)
         {
-            return await _context.Issues.ToListAsync();
+            var issue = await _context.Issues.FindAsync(id);
+            return issue == null ? NotFound() : Ok(issue);
         }
 
-        [HttpDelete("{issueId}")]
-        public async Task<IActionResult> DeleteIssueById(int issueId)
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        public async Task<IActionResult> Create(Issue issue)
         {
-            var issue = await _context.Issues.FirstOrDefaultAsync(x => x.Id == issueId);
+            await _context.Issues.AddAsync(issue);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction(nameof(GetById), new {id = issue.Id}, issue);
+        }
+        
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteIssueById(int id)
+        {
+            var issue = await _context.Issues.FirstOrDefaultAsync(x => x.Id == id);
 
             if (issue == null)
             {
