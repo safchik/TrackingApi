@@ -35,19 +35,29 @@ namespace TrackingApi.Controllers
 
             return CreatedAtAction(nameof(GetById), new {id = issue.Id}, issue);
         }
+
+        [HttpPut("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> Update(int id, Issue issue)
+        {
+            if (id != issue.Id) return BadRequest();
+
+            _context.Entry(issue).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+            return NoContent();
+        }
         
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteIssueById(int id)
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> Delete(int id)
         {
-            var issue = await _context.Issues.FirstOrDefaultAsync(x => x.Id == id);
+            var issueToDelete = await _context.Issues.FindAsync(id);
+            if (issueToDelete == null) return NotFound();
 
-            if (issue == null)
-            {
-                return BadRequest();
-            }
-
-            _context.Issues.Remove(issue);
+            _context.Issues.Remove(issueToDelete);
             await _context.SaveChangesAsync();
 
             return NoContent();
