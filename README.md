@@ -1,8 +1,8 @@
-###Issue Tracking Web API with ASP.NET Core and .NET 6
+### Issue Tracking Web API with ASP.NET Core and .NET 6
 ---
 This project provides an example of how to create a Web API using ASP.NET Core and .NET 6 for an issue tracking application. The Web API is a RESTful service that exposes a set of endpoints for managing issues. Additionally, this solution includes a console client application that consumes the Web API endpoints.
 
-##Getting Started
+## Getting Started
 ---
 To run the application, follow these steps:
 
