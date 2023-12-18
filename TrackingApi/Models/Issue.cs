@@ -21,7 +21,6 @@ namespace TrackingApi.Models
     {
         Low, Medium, High
     }
-
     public enum IssueType
     {
         Feature, Bug, Documentation
